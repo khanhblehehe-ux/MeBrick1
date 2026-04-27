@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>📍 Lấy tọa độ ô thêm ảnh</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: sans-serif; background: #1a1a2e; color: #fff; min-height: 100vh; }
+
+    .toolbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: #16213e; padding: 10px 20px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    }
+    .toolbar h2 { font-size: 15px; color: #f0c060; white-space: nowrap; }
+    .toolbar label {
+      background: #f0c060; color: #1a1a2e; padding: 7px 14px;
+      border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 700;
+    }
+    .toolbar input[type=file] { display: none; }
+
+    .size-info { font-size: 12px; color: #aaa; }
+    .mode-btn {
+      padding: 7px 14px; border-radius: 6px; border: 2px solid #f0c060;
+      cursor: pointer; font-size: 13px; font-weight: 600; background: transparent; color: #f0c060;
+      transition: all 0.2s;
+    }
+    .mode-btn.active { background: #f0c060; color: #1a1a2e; }
+    .clear-btn {
+      padding: 7px 14px; border-radius: 6px; border: 2px solid #ff4757;
+      cursor: pointer; font-size: 13px; font-weight: 600; background: transparent; color: #ff4757;
+    }
+    .clear-btn:hover { background: #ff4757; color: #fff; }
+
+    .canvas-wrapper {
+      margin-top: 60px; display: flex; justify-content: center;
+      padding: 20px; min-height: calc(100vh - 60px);
+    }
+    .canvas-container {
+      position: relative; display: inline-block; cursor: crosshair;
+      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+    }
+    #bgImage { display: block; max-width: 100%; }
+
+    .marker {
+      position: absolute; transform: translate(-50%, -50%);
+      width: 24px; height: 24px; border-radius: 50%;
+      background: rgba(240,192,96,0.9); border: 2px solid #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #1a1a2e;
+      pointer-events: none; box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+    .box-overlay {
+      position: absolute; border: 2px dashed #f0c060;
+      background: rgba(240,192,96,0.15);
+      pointer-events: none;
+    }
+    .box-label {
+      position: absolute; top: -22px; left: 0;
+      background: #f0c060; color: #1a1a2e;
+      font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 3px;
+      white-space: nowrap;
+    }
+
+    /* Results panel */
+    .results {
+      position: fixed; right: 0; top: 60px; bottom: 0; width: 320px;
+      background: #0f3460; overflow-y: auto; padding: 16px;
+      border-left: 1px solid #1a1a4e;
+    }
+    .results h3 { font-size: 14px; color: #f0c060; margin-bottom: 12px; }
+    .result-item {
+      background: #16213e; border-radius: 8px; padding: 10px 12px;
+      margin-bottom: 8px; font-size: 12px; border: 1px solid #1a1a4e;
+    }
+    .result-item .num { color: #f0c060; font-weight: 700; margin-bottom: 4px; }
+    .result-item .coords { font-family: monospace; color: #a8d8ea; }
+    .result-item .size-label { color: #ccc; margin-top: 4px; }
+    .copy-btn {
+      margin-top: 6px; padding: 4px 10px; background: #f0c060; color: #1a1a2e;
+      border: none; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 700;
+    }
+    .export-btn {
+      width: 100%; padding: 10px; background: #e94560; color: #fff;
+      border: none; border-radius: 6px; font-size: 13px; cursor: pointer;
+      font-weight: 700; margin-top: 8px;
+    }
+    .export-btn:hover { background: #ff6b81; }
+
+    /* Responsive: reserve space for fixed results on large screens,
+       but stack results under canvas on small screens so canvas can expand */
+    @media (min-width: 900px) {
+      .canvas-wrapper { margin-right: 340px; }
+    }
+    @media (max-width: 899px) {
+      .results {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-left: none;
+        border-top: 1px solid #1a1a4e;
+      }
+      .canvas-wrapper { margin-right: 0; padding-bottom: 12px; min-height: auto; }
+      .toolbar { position: sticky; top: 0; z-index: 120; }
+    }
+
+    .tip { font-size: 11px; color: #8892b0; margin-bottom: 12px; line-height: 1.5; }
+    .placeholder {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      text-align: center; color: #555; pointer-events: none;
+    }
+    .placeholder .icon { font-size: 60px; margin-bottom: 12px; }
+    .placeholder p { font-size: 16px; }
+  </style>
+</head>
+<body>
+
+<div class="toolbar">
+  <h2>📍 Lấy tọa độ ô thêm ảnh</h2>
+  <label>
+    📂 Tải ảnh nền
+    <input type="file" id="fileInput" accept="image/*" />
+  </label>
+  <button class="mode-btn active" id="modePoint" onclick="setMode('point')">📍 Đánh dấu điểm</button>
+  <button class="mode-btn" id="modeBox" onclick="setMode('box')">⬜ Vẽ ô (kéo thả)</button>
+  <button class="clear-btn" onclick="clearAll()">🗑 Xóa tất cả</button>
+  <span class="size-info" id="sizeInfo">–</span>
+</div>
+
+<div class="canvas-wrapper">
+  <div class="canvas-container" id="container">
+    <div class="placeholder" id="placeholder">
+      <div class="icon">🖼️</div>
+      <p>Tải ảnh nền lên để bắt đầu</p>
+    </div>
+    <img id="bgImage" style="display:none" />
+    <div id="overlays"></div>
+  </div>
+</div>
+
+<div class="results">
+  <h3>📋 Kết quả tọa độ</h3>
+  <p class="tip">
+    <b>Điểm:</b> click để đánh dấu vị trí<br>
+    <b>Ô:</b> kéo thả để vẽ ô thêm ảnh<br>
+    Tọa độ tính theo % (hoặc px) so với ảnh gốc
+  </p>
+  <div id="resultList"><p style="color:#555;font-size:12px">Chưa có dữ liệu</p></div>
+  <button class="export-btn" onclick="exportAll()">📋 Copy tất cả kết quả</button>
+</div>
+
+<script>
+  let mode = 'point';
+  let imgW = 0, imgH = 0;
+  let items = [];
+  let drawing = false, startX = 0, startY = 0;
+  let tempBox = null;
+
+  const container = document.getElementById('container');
+  const bgImage = document.getElementById('bgImage');
+  const overlays = document.getElementById('overlays');
+
+  document.getElementById('fileInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    bgImage.src = url;
+    bgImage.style.display = 'block';
+    document.getElementById('placeholder').style.display = 'none';
+    bgImage.onload = () => {
+      imgW = bgImage.naturalWidth;
+      imgH = bgImage.naturalHeight;
+      document.getElementById('sizeInfo').textContent = `Ảnh: ${imgW}×${imgH}px`;
+    };
+  });
+
+  function setMode(m) {
+    mode = m;
+    document.getElementById('modePoint').classList.toggle('active', m === 'point');
+    document.getElementById('modeBox').classList.toggle('active', m === 'box');
+    container.style.cursor = m === 'box' ? 'crosshair' : 'pointer';
+  }
+
+  function getRelPos(e) {
+    const rect = bgImage.getBoundingClientRect();
+    const scaleX = imgW / rect.width;
+    const scaleY = imgH / rect.height;
+    const x = Math.round((e.clientX - rect.left) * scaleX);
+    const y = Math.round((e.clientY - rect.top) * scaleY);
+    const xPct = ((x / imgW) * 100).toFixed(1);
+    const yPct = ((y / imgH) * 100).toFixed(1);
+    return { x, y, xPct, yPct, clientX: e.clientX - rect.left, clientY: e.clientY - rect.top, scaleX, scaleY };
+  }
+
+  // POINT MODE
+  container.addEventListener('click', (e) => {
+    if (mode !== 'point') return;
+    if (!bgImage.complete || !imgW) return;
+    const pos = getRelPos(e);
+    const n = items.filter(i => i.type === 'point').length + 1;
+    items.push({ type: 'point', n, ...pos });
+    renderMarker(pos.clientX, pos.clientY, n);
+    renderResults();
+  });
+
+  // BOX MODE
+  container.addEventListener('mousedown', (e) => {
+    if (mode !== 'box') return;
+    if (!bgImage.complete || !imgW) return;
+    drawing = true;
+    const rect = bgImage.getBoundingClientRect();
+    startX = e.clientX - rect.left;
+    startY = e.clientY - rect.top;
+    tempBox = document.createElement('div');
+    tempBox.style.cssText = `position:absolute;border:2px dashed #fff;background:rgba(255,255,255,0.1);pointer-events:none;`;
+    tempBox.style.left = startX + 'px';
+    tempBox.style.top = startY + 'px';
+    overlays.appendChild(tempBox);
+  });
+
+  container.addEventListener('mousemove', (e) => {
+    if (!drawing || !tempBox) return;
+    const rect = bgImage.getBoundingClientRect();
+    const cx = e.clientX - rect.left;
+    const cy = e.clientY - rect.top;
+    const x = Math.min(cx, startX), y = Math.min(cy, startY);
+    const w = Math.abs(cx - startX), h = Math.abs(cy - startY);
+    tempBox.style.left = x + 'px';
+    tempBox.style.top = y + 'px';
+    tempBox.style.width = w + 'px';
+    tempBox.style.height = h + 'px';
+  });
+
+  container.addEventListener('mouseup', (e) => {
+    if (!drawing || !tempBox) return;
+    drawing = false;
+    const rect = bgImage.getBoundingClientRect();
+    const scaleX = imgW / rect.width;
+    const scaleY = imgH / rect.height;
+    const cx = e.clientX - rect.left;
+    const cy = e.clientY - rect.top;
+    const x1 = Math.min(cx, startX), y1 = Math.min(cy, startY);
+    const w = Math.abs(cx - startX), h = Math.abs(cy - startY);
+    if (w < 5 || h < 5) { overlays.removeChild(tempBox); tempBox = null; return; }
+
+    const px = Math.round(x1 * scaleX), py = Math.round(y1 * scaleY);
+    const pw = Math.round(w * scaleX), ph = Math.round(h * scaleY);
+    const n = items.filter(i => i.type === 'box').length + 1;
+    items.push({ type: 'box', n, x: px, y: py, w: pw, h: ph, clientX: x1, clientY: y1, clientW: w, clientH: h });
+
+    overlays.removeChild(tempBox); tempBox = null;
+    renderBox(x1, y1, w, h, n, px, py, pw, ph);
+    renderResults();
+  });
+
+  function renderMarker(cx, cy, n) {
+    const el = document.createElement('div');
+    el.className = 'marker';
+    el.style.left = cx + 'px';
+    el.style.top = cy + 'px';
+    el.textContent = n;
+    overlays.appendChild(el);
+  }
+
+  function renderBox(cx, cy, cw, ch, n, px, py, pw, ph) {
+    const el = document.createElement('div');
+    el.className = 'box-overlay';
+    el.style.left = cx + 'px';
+    el.style.top = cy + 'px';
+    el.style.width = cw + 'px';
+    el.style.height = ch + 'px';
+    const lbl = document.createElement('div');
+    lbl.className = 'box-label';
+    lbl.textContent = `Ô ${n}: ${pw}×${ph}px`;
+    el.appendChild(lbl);
+    overlays.appendChild(el);
+  }
+
+  function renderResults() {
+    const list = document.getElementById('resultList');
+    if (!items.length) { list.innerHTML = '<p style="color:#555;font-size:12px">Chưa có dữ liệu</p>'; return; }
+    list.innerHTML = items.map(item => {
+      if (item.type === 'point') {
+        const code = `left: "${item.xPct}%",\ntop: "${item.yPct}%"`;
+        return `<div class="result-item">
+          <div class="num">📍 Điểm ${item.n}</div>
+          <div class="coords">X: ${item.x}px (${item.xPct}%)<br>Y: ${item.y}px (${item.yPct}%)</div>
+          <button class="copy-btn" onclick="copyText(\`${code}\`)">📋 Copy</button>
+        </div>`;
+      } else {
+        const xPct = ((item.x / imgW) * 100).toFixed(1);
+        const yPct = ((item.y / imgH) * 100).toFixed(1);
+        const wPct = ((item.w / imgW) * 100).toFixed(1);
+        const hPct = ((item.h / imgH) * 100).toFixed(1);
+        const code = `left: "${xPct}%",\ntop: "${yPct}%",\nwidth: "${wPct}%",\nheight: "${hPct}%"`;
+        return `<div class="result-item">
+          <div class="num">⬜ Ô ${item.n}</div>
+          <div class="coords">X: ${item.x}px (${xPct}%)<br>Y: ${item.y}px (${yPct}%)</div>
+          <div class="size-label">Kích thước: ${item.w}×${item.h}px (${wPct}%×${hPct}%)</div>
+          <button class="copy-btn" onclick="copyText(\`${code}\`)">📋 Copy</button>
+        </div>`;
+      }
+    }).join('');
+  }
+
+  function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => alert('✅ Đã copy!'));
+  }
+
+  function exportAll() {
+    const lines = items.map(item => {
+      if (item.type === 'point') {
+        return `// Điểm ${item.n}\nleft: "${((item.x/imgW)*100).toFixed(1)}%", top: "${((item.y/imgH)*100).toFixed(1)}%"`;
+      } else {
+        const xP = ((item.x/imgW)*100).toFixed(1), yP = ((item.y/imgH)*100).toFixed(1);
+        const wP = ((item.w/imgW)*100).toFixed(1), hP = ((item.h/imgH)*100).toFixed(1);
+        return `// Ô ${item.n} (${item.w}×${item.h}px)\nleft: "${xP}%", top: "${yP}%", width: "${wP}%", height: "${hP}%"`;
+      }
+    }).join('\n\n');
+    navigator.clipboard.writeText(lines).then(() => alert('✅ Đã copy toàn bộ kết quả!'));
+  }
+
+  function clearAll() {
+    items = [];
+    overlays.innerHTML = '';
+    renderResults();
+  }
+</script>
+</body>
+</html>
+Windows PowerShell
+Copyright (C) Mi

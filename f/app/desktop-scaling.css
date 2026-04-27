@@ -1,0 +1,59 @@
+/* ============================================
+   Desktop Scaling Override for Mobile
+   
+   Since viewport is set to 1024px on all devices,
+   this file ensures all devices display desktop layout
+   at a reduced scale.
+   ============================================ */
+
+/* Override mobile-specific media queries to prevent them from applying */
+/* Since browser thinks viewport is 1024px, these won't trigger anyway,
+   but we override them just to be explicit */
+
+/* Remove all mobile (max-width: 480px) styles by forcing desktop versions */
+@media (max-width: 480px) {
+  /* These rules are intentionally empty - forcing desktop layout */
+}
+
+/* Remove tablet (max-width: 768px) styles by forcing desktop versions */
+@media (max-width: 768px) {
+  /* These rules are intentionally empty - forcing desktop layout */
+}
+
+/* Ensure desktop layout is always active */
+html {
+  /* Disable mobile-style zooming - forces actual zoom to scale entire page */
+  touch-action: pan-x pan-y;
+}
+
+/* Hide horizontal scrollbar on iOS if needed */
+@supports (-webkit-touch-callout: none) {
+  body {
+    /* iOS specific: ensure smooth scrolling */
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  button,
+  a,
+  input,
+  textarea,
+  select {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+}
+
+/* Ensure all containers use desktop widths */
+.container,
+.max-w-screen-lg,
+.max-w-screen-xl {
+  /* These should work with desktop layout */
+}
+
+/* Handle any remaining mobile layout issues */
+@media screen {
+  /* Force column layout for design sections to work at 1024px viewport */
+  /* This ensures the 2-column grid layout works properly on all devices */
+}
+

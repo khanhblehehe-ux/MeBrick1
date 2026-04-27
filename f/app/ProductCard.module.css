@@ -1,0 +1,75 @@
+/* ProductCard.module.css */
+.card {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  position: relative;
+  height: 280px;
+  background-color: #f3f4f6;
+}
+
+/* Responsive card header height */
+@media (max-width: 480px) {
+  .cardHeader {
+    height: 200px;
+  }
+}
+
+@media (min-width: 768px) {
+  .cardHeader {
+    height: 320px;
+  }
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e5e7eb;
+  color: #6b7280;
+}
+
+.categoryBadge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: rgba(59, 130, 246, 0.9);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  .categoryBadge {
+    top: 1rem;
+    right: 1rem;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* ... thêm các class khác nếu cần */

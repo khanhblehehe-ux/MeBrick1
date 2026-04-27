@@ -1,0 +1,16 @@
+{
+  "name": "mebrick",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev f/app",
+    "build": "next build f/app",
+    "start": "next start f/app"
+  },
+  "dependencies": {
+    "next": "^16.2.1",
+    "qrcode.react": "^4.2.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  }
+}

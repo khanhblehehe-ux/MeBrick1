@@ -1,0 +1,57 @@
+/* Mobile responsive styles for cart page */
+
+/* Apply Poppins font to all cart buttons */
+.cart-qty-btn,
+.cart-remove-btn,
+.cart-edit-btn {
+  font-family: "Poppins", sans-serif !important;
+}
+
+/* Hide minus button on mobile */
+@media (max-width: 768px) {
+  .cart-qty-minus {
+    display: none;
+  }
+
+  /* Adjust quantity input and plus button */
+  .cart-qty-btn {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 14px !important;
+  }
+
+  .cart-qty-value {
+    width: 36px !important;
+    font-size: 12px !important;
+  }
+
+  /* Remove button smaller on mobile */
+  .cart-remove-btn {
+    font-size: 16px !important;
+  }
+
+  /* Summary: stack label and total on small screens */
+  .cart-summary-box {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+}
+
+/* Very small phones: tighten wrapper padding + stack action buttons */
+@media (max-width: 480px) {
+  .cart-wrapper {
+    padding: 20px 12px !important;
+  }
+
+  .cart-actions {
+    flex-direction: column !important;
+  }
+
+  .cart-checkout-btn,
+  .cart-continue-btn {
+    width: 100% !important;
+    padding: 0 16px !important;
+    text-align: center !important;
+  }
+}

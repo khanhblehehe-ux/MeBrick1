@@ -1,0 +1,80 @@
+.tracuu-wrapper {
+  min-height: 80vh;
+  background: #f6f8fc;
+  padding: 60px;
+}
+
+.tracuu-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.tracuu-container h1 {
+  font-size: 30px;
+  margin-bottom: 40px;
+}
+
+.search-box {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;
+}
+
+.search-box input {
+  padding: 14px 18px;
+  width: 280px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+/* ===== Voltage Button ===== */
+
+.voltage-button {
+  position: relative;
+  display: inline-block;
+}
+
+.voltage-button button {
+  color: white;
+  background: #0b2d72;
+  padding: 0.9rem 2.8rem;
+  border-radius: 50px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+.voltage-button button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.voltage-button svg {
+  position: absolute;
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  pointer-events: none;
+}
+
+.voltage-border {
+  stroke: #6bfeff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 120;
+  stroke-dashoffset: 0;
+  filter: url("#glow-tra-cuu");
+  animation: electric-run 2s linear infinite;
+}
+
+@keyframes electric-run {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}

@@ -1,0 +1,79 @@
+/* ==============================
+   Header – Mobile Responsive
+============================== */
+
+/* Hamburger button – hidden on desktop */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background-color: #333;
+  border-radius: 2px;
+  transition: background-color 0.2s;
+}
+
+/* Mobile slide-down nav – hidden by default */
+.mobileMenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1px solid #f0f0f0;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  flex-direction: column;
+  z-index: 99;
+  padding: 8px 0 12px;
+}
+
+.mobileMenu.open {
+  display: flex;
+}
+
+.mobileNavLink {
+  padding: 13px 24px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid #f5f5f5;
+  transition: color 0.2s;
+}
+
+.mobileNavLink:last-child {
+  border-bottom: none;
+}
+
+.mobileNavLink:hover {
+  color: #0b2d72;
+}
+
+/* ===== Mobile breakpoint ===== */
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  /* Hide desktop nav on mobile */
+  .desktopNav {
+    display: none !important;
+  }
+
+  /* Hide social icon links on small screens to save header space */
+  .socialLinks {
+    display: none !important;
+  }
+}

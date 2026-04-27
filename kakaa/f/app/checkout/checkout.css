@@ -1,0 +1,152 @@
+/* Checkout page responsive styles */
+
+/* Mobile layout optimizations */
+@media (max-width: 768px) {
+  /* Main grid container - 1 column layout on mobile */
+  .checkout-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Form grid - 1 column on mobile for better fit */
+  .checkout-form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  /* Card styling - reduce padding */
+  .checkout-card {
+    padding: 10px !important;
+  }
+
+  /* Card title - smaller font */
+  .checkout-card-title {
+    font-size: 14px !important;
+    margin-bottom: 10px !important;
+  }
+
+  /* Labels - smaller */
+  .checkout-label {
+    font-size: 11px !important;
+  }
+
+  /* Input fields - smaller with less padding */
+  .checkout-input {
+    height: 36px !important;
+    padding: 0 10px !important;
+    font-size: 14px !important;
+  }
+
+  /* Textarea - adjust */
+  .checkout-textarea {
+    padding: 8px 10px !important;
+    font-size: 14px !important;
+  }
+
+  /* Radio buttons - more compact */
+  .checkout-radio {
+    padding: 8px 10px !important;
+    font-size: 13px !important;
+    gap: 8px !important;
+  }
+
+  /* Buttons - more compact */
+  .checkout-button {
+    height: 38px !important;
+    padding: 0 12px !important;
+    font-size: 13px !important;
+    border-radius: 8px !important;
+  }
+
+  /* Summary grid - more compact */
+  .checkout-summary-grid {
+    gap: 8px !important;
+  }
+
+  /* Summary rows - smaller text */
+  .checkout-row {
+    font-size: 13px !important;
+    padding: 6px 0 !important;
+  }
+
+  .checkout-row-big {
+    font-size: 14px !important;
+    padding: 8px 0 !important;
+  }
+
+  /* Product item in summary */
+  .checkout-product-item {
+    gap: 8px !important;
+    padding: 8px !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* Product thumbnail in summary */
+  .checkout-product-thumb {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  /* Product info - smaller text */
+  .checkout-product-name {
+    font-size: 12px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .checkout-product-meta {
+    font-size: 11px !important;
+  }
+
+  /* Spacing - reduce margins */
+  .checkout-button-group {
+    margin-top: 10px !important;
+    gap: 8px !important;
+  }
+
+  /* Title size */
+  .checkout-title {
+    font-size: 18px !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Error message - smaller */
+  .checkout-error {
+    padding: 10px !important;
+    font-size: 12px !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Field spacing */
+  .checkout-field {
+    gap: 4px !important;
+  }
+}
+
+/* Tablet (481px - 768px) - 2 column form grid */
+@media (min-width: 481px) and (max-width: 768px) {
+  .checkout-form-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .checkout-form-grid > div:nth-child(5),
+  .checkout-form-grid > div:nth-child(6),
+  .checkout-form-grid > div:nth-child(7) {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+/* Desktop (769px+) - Keep 2 column form grid */
+@media (min-width: 769px) {
+  .checkout-form-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+
+  .checkout-form-grid > div:nth-child(5),
+  .checkout-form-grid > div:nth-child(6),
+  .checkout-form-grid > div:nth-child(7) {
+    grid-column: 1 / -1!important;
+  }
+}
+
