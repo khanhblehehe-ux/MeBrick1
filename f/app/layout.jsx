@@ -79,6 +79,8 @@ export default function RootLayout({ children }) {
     <html lang="vi">
       <body
         className={`${beVN.variable} ${inter.variable} ${poppins.variable} ${openSans.variable} ${montserrat.variable} ${playfair.variable} ${antonio.variable} ${cinzel.variable}`}>
+        {/* Emergency runtime flag to disable client-side polling to reduce origin egress */}
+        <script dangerouslySetInnerHTML={{ __html: `window.__DISABLE_POLLING = true;` }} />
         {children}
       </body>
     </html>

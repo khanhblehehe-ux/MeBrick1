@@ -33,6 +33,10 @@ import { useStickerManager } from "./hooks/useStickerManager";
 import { exportImage } from "./utils/exportImage";
 
 async function uploadPreviewToBackend(dataUrl) {
+  // Prevent large base64 uploads when emergency flag is set
+  if (typeof window !== "undefined" && window.__DISABLE_POLLING) {
+    throw new Error("Uploads disabled by runtime flag");
+  }
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
   const res = await fetch(`${baseUrl}/api/uploads/base64`, {
     method: "POST",
@@ -844,16 +848,18 @@ function DesignPageInner() {
 
       // upload preview (nếu fail -> dùng base64)
       let previewUrl = dataUrl;
-      try {
-        const up = await uploadPreviewToBackend(dataUrl);
-        const baseUrl =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-        if (up?.url)
-          previewUrl = up.url.startsWith("http")
-            ? up.url
-            : `${baseUrl}${up.url}`;
-      } catch (err) {
-        console.warn("Upload preview failed -> fallback base64 preview:", err);
+      const uploadsDisabled = (typeof window !== "undefined" && window.__DISABLE_POLLING) || process.env.NEXT_PUBLIC_DISABLE_UPLOADS === "true";
+      if (uploadsDisabled) {
+        previewUrl = "";
+      } else {
+        try {
+          const up = await uploadPreviewToBackend(dataUrl);
+          const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+          if (up?.url)
+            previewUrl = up.url.startsWith("http") ? up.url : `${baseUrl}${up.url}`;
+        } catch (err) {
+          console.warn("Upload preview failed -> fallback base64 preview:", err);
+        }
       }
 
       // upload slot images (ảnh khách thêm vào ô slot của background)
@@ -861,18 +867,23 @@ function DesignPageInner() {
       const uploadedSlotImages = {};
       await Promise.all(
         Object.entries(slotImages).map(async ([key, src]) => {
-          if (typeof src === "string" && src.startsWith("data:")) {
-            try {
-              const up = await uploadPreviewToBackend(src);
-              uploadedSlotImages[key] = up?.url
-                ? (up.url.startsWith("http") ? up.url : `${baseUrlForSlot}${up.url}`)
-                : src;
-            } catch {
+            if (typeof src === "string" && src.startsWith("data:")) {
+              if (uploadsDisabled) {
+                // preserve user-uploaded data URLs so uploads from users still work
+                uploadedSlotImages[key] = src;
+              } else {
+                try {
+                  const up = await uploadPreviewToBackend(src);
+                  uploadedSlotImages[key] = up?.url
+                    ? (up.url.startsWith("http") ? up.url : `${baseUrlForSlot}${up.url}`)
+                    : src;
+                } catch {
+                  uploadedSlotImages[key] = src;
+                }
+              }
+            } else {
               uploadedSlotImages[key] = src;
             }
-          } else {
-            uploadedSlotImages[key] = src;
-          }
         })
       );
 

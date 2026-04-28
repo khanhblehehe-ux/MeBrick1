@@ -167,7 +167,10 @@ export default function AdminOrders() {
 
   useEffect(() => {
     load();
-    pollRef.current = setInterval(() => load({ silent: true }), POLL_MS);
+    const disabled = (typeof window !== "undefined" && window.__DISABLE_POLLING) || process.env.NEXT_PUBLIC_DISABLE_POLLING === "true";
+    if (!disabled) {
+      pollRef.current = setInterval(() => load({ silent: true }), POLL_MS);
+    }
     return () => pollRef.current && clearInterval(pollRef.current);
     // eslint-disable-next-line
   }, []);
