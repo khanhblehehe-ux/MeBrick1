@@ -1,55 +1,70 @@
 // killRapidPollers.js
-// Middleware: detect rapid polling to /api/orders and terminate connection
+// Middleware: aggressively detect rapid polling to GET /api/orders and block
 
-const WINDOW_MS = 3000; // threshold per request (3 seconds)
-const REQUIRED_CONSECUTIVE = 3; // number of consecutive fast requests to trigger kill
+const WINDOW_MS = 3000; // sliding window size (3 seconds)
+const REQUIRED_CONSECUTIVE = 3; // number of requests inside window to trigger block
+const BLOCK_FOR_MS = 10 * 60 * 1000; // block duration (10 minutes)
 
-// Simple in-memory map: key -> { lastTs, consecutive }
-// Keying by IP + user-agent to be a bit more specific
-const clients = new Map();
+const requestTimes = new Map(); // key -> [timestamps]
+const blacklist = new Map(); // key -> unblockTimestamp
 
 function makeKey(req) {
-  const ip = req.ip || req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown";
+  const ip = (req.ip || req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown").split(',')[0].trim();
   const ua = req.headers["user-agent"] || "ua";
   return `${ip}::${ua}`;
 }
 
+function shouldMonitor(req) {
+  // only monitor GET requests to /api/orders (and subpaths)
+  try {
+    const method = (req.method || "").toUpperCase();
+    const path = req.originalUrl || req.url || "";
+    return method === "GET" && path.startsWith("/api/orders");
+  } catch (e) {
+    return false;
+  }
+}
+
 module.exports = function killRapidPollers(req, res, next) {
   try {
+    if (!shouldMonitor(req)) return next();
+
     const key = makeKey(req);
     const now = Date.now();
-    const entry = clients.get(key) || { lastTs: 0, consecutive: 0 };
-    const delta = now - (entry.lastTs || 0);
 
-    if (delta <= WINDOW_MS) {
-      entry.consecutive = (entry.consecutive || 0) + 1;
-    } else {
-      entry.consecutive = 0;
-    }
-    entry.lastTs = now;
-    clients.set(key, entry);
-
-    if (entry.consecutive >= REQUIRED_CONSECUTIVE) {
-      console.warn(`[killRapidPollers] Killing connection for ${key} after ${entry.consecutive} fast requests (delta=${delta}ms)`);
-      // try respond with 429 then destroy socket
-      try {
-        res.status(429).send("Too many requests — connection terminated");
-      } catch (e) {}
-      try {
-        // destroy underlying socket to stop egress immediately
-        if (req.socket && typeof req.socket.destroy === "function") req.socket.destroy();
-      } catch (e) {}
-      // also clear entry to avoid repeated kills
-      clients.delete(key);
-      return; // do not call next()
+    // immediate reject if blacklisted
+    const blockedUntil = blacklist.get(key);
+    if (blockedUntil && blockedUntil > now) {
+      try { res.status(429).send("Too many requests — temporarily blocked"); } catch (e) {}
+      try { if (req.socket && typeof req.socket.destroy === "function") req.socket.destroy(); } catch (e) {}
+      return;
+    } else if (blockedUntil) {
+      // expired
+      blacklist.delete(key);
     }
 
-    // clean up old entries periodically (simple eviction)
-    if (clients.size > 20000) {
-      // remove entries older than 10 minutes
-      const cutoff = Date.now() - 10 * 60 * 1000;
-      for (const [k, v] of clients.entries()) {
-        if ((v.lastTs || 0) < cutoff) clients.delete(k);
+    const times = requestTimes.get(key) || [];
+    // push now and remove entries older than WINDOW_MS
+    const cutoff = now - WINDOW_MS;
+    const newTimes = times.filter((t) => t > cutoff);
+    newTimes.push(now);
+    requestTimes.set(key, newTimes);
+
+    if (newTimes.length >= REQUIRED_CONSECUTIVE) {
+      // trigger blacklist
+      blacklist.set(key, now + BLOCK_FOR_MS);
+      requestTimes.delete(key);
+      console.warn(`[killRapidPollers] Blocking ${key} for ${BLOCK_FOR_MS}ms after ${newTimes.length} requests within ${WINDOW_MS}ms`);
+      try { res.status(429).send("Too many requests — connection terminated"); } catch (e) {}
+      try { if (req.socket && typeof req.socket.destroy === "function") req.socket.destroy(); } catch (e) {}
+      return;
+    }
+
+    // lightweight eviction to avoid mem growth
+    if (requestTimes.size > 20000) {
+      const globalCutoff = Date.now() - 10 * 60 * 1000;
+      for (const [k, v] of requestTimes.entries()) {
+        if ((v[v.length - 1] || 0) < globalCutoff) requestTimes.delete(k);
       }
     }
 
