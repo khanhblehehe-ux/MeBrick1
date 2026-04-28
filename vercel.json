@@ -3,7 +3,7 @@
   "outputDirectory": "f/.next",
   "framework": "nextjs",
   "env": {
-    "API_BACKEND_URL": "@API_BACKEND_URL",
-    "NEXT_PUBLIC_API_URL": "@NEXT_PUBLIC_API_URL"
+    "API_BACKEND_URL": " https://mebrick-backend-production.up.railway.app",
+    "NEXT_PUBLIC_API_URL": "https://mebrick.up.railway.app"
   }
 }
