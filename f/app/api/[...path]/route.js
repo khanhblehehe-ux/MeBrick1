@@ -29,10 +29,38 @@ async function proxy(request, { params }) {
     init.body = await request.arrayBuffer();
   }
 
+  // If this is a GET for a static/media asset, redirect client to backend
+  // to avoid streaming large responses through the server (reduces origin transfer).
+  if (request.method === "GET") {
+    const mediaExt = /(\.png|\.jpe?g|\.webp|\.gif|\.mp4|\.mp3|\.pdf|\.zip|\.svg|\.avif)(?:$|\?)/i;
+    if (mediaExt.test(incomingUrl.pathname)) {
+      return NextResponse.redirect(targetUrl, 307);
+    }
+  }
+
   const upstream = await fetch(targetUrl, init);
   const responseHeaders = new Headers(upstream.headers);
+
+  // Propagate cache-control from upstream when available, otherwise set a sensible default for CDN caching.
+  if (!responseHeaders.has("cache-control") && request.method === "GET") {
+    responseHeaders.set("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
+  }
+
+  // CORS
   responseHeaders.set("Access-Control-Allow-Origin", incomingUrl.origin);
   responseHeaders.set("Access-Control-Allow-Credentials", "true");
+
+  // Remove hop-by-hop headers that shouldn't be forwarded
+  [
+    "transfer-encoding",
+    "connection",
+    "keep-alive",
+    "proxy-authenticate",
+    "proxy-authorization",
+    "te",
+    "trailer",
+    "upgrade",
+  ].forEach((h) => responseHeaders.delete(h));
 
   return new NextResponse(upstream.body, {
     status: upstream.status,
