@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap");
-
 /* app/global.css - KHÔNG CÒN TAILWIND */
 /* Reset và base styles */
 * {
@@ -86,6 +84,9 @@
   --transition-base: 300ms ease;
   --transition-slow: 500ms ease;
 }
+
+/* Import Poppins font */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap");
 
 /* Base Styles */
 body {

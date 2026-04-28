@@ -7,6 +7,7 @@ import { addToCart, getCart, updateCartItem } from "../../lib/cart";
 import Stepper from "./components/Stepper";
 // ✅ Site header/footer (giống trang chủ)
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 import SampleGallery from "./components/SampleGallery";
 
 import { useState, useRef, useEffect, Suspense } from "react";
@@ -86,36 +87,17 @@ function DesignPageInner() {
       const width = window.innerWidth;
       let newSize;
 
-      // Responsive canvas sizing based on screen width
-      if (width >= CANVAS_SIZE_CONFIG.desktop_large.breakpoint) {
-        // Large desktop / 24" (1680px+)
+      if (width >= CANVAS_SIZE_CONFIG.desktop.breakpoint) {
+        // Desktop
         newSize = { 
-          width: CANVAS_SIZE_CONFIG.desktop_large.width, 
-          height: CANVAS_SIZE_CONFIG.desktop_large.height 
-        };
-      } else if (width >= CANVAS_SIZE_CONFIG.desktop_medium.breakpoint) {
-        // Medium desktop / 17-19" (1366px - 1679px)
-        newSize = { 
-          width: CANVAS_SIZE_CONFIG.desktop_medium.width, 
-          height: CANVAS_SIZE_CONFIG.desktop_medium.height 
-        };
-      } else if (width >= CANVAS_SIZE_CONFIG.desktop_small.breakpoint) {
-        // Small desktop / Laptop 15" (1024px - 1365px)
-        newSize = { 
-          width: CANVAS_SIZE_CONFIG.desktop_small.width, 
-          height: CANVAS_SIZE_CONFIG.desktop_small.height 
-        };
-      } else if (width >= CANVAS_SIZE_CONFIG.tablet.breakpoint) {
-        // Tablet (768px - 1023px)
-        newSize = { 
-          width: CANVAS_SIZE_CONFIG.tablet.width, 
-          height: CANVAS_SIZE_CONFIG.tablet.height 
+          width: CANVAS_SIZE_CONFIG.desktop.width, 
+          height: CANVAS_SIZE_CONFIG.desktop.height 
         };
       } else {
-        // Mobile (< 768px)
+        // Mobile — dùng cùng kích thước desktop, canvasScale trong Stage tự co lại đúng tỉ lệ
         newSize = { 
-          width: CANVAS_SIZE_CONFIG.mobile.width, 
-          height: CANVAS_SIZE_CONFIG.mobile.height 
+          width: CANVAS_SIZE_CONFIG.desktop.width, 
+          height: CANVAS_SIZE_CONFIG.desktop.height 
         };
       }
 
@@ -1057,9 +1039,7 @@ function DesignPageInner() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}>
         {/* ===== GRADIENT BACKGROUND WRAPPER ===== */}
-        <div
-          className="w-full relative overflow-visible"
-          style={{ minHeight: "auto" }}>
+        <div className="min-h-screen w-full relative overflow-hidden">
           {/* Radial gradient background */}
           <div className="absolute inset-0 z-0 bg-white" />
           {/* Overlay nhẹ để dễ đọc chữ */}
@@ -1187,7 +1167,8 @@ function DesignPageInner() {
         </div>
       </DndContext>
 
-      {/* SITE FOOTER hidden on design page */}
+      {/* SITE FOOTER */}
+      <Footer />
     </div>
   );
 }

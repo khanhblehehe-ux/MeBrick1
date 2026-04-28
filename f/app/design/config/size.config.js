@@ -1,42 +1,17 @@
-// Canvas size configuration - Responsive based on screen width
+// Canvas size configuration - Separated for Desktop and Mobile
 export const CANVAS_SIZE_CONFIG = {
-  // Small desktop / Laptop 15" (1024px - 1365px)
-  desktop_small: {
+  // Desktop (≥1024px)
+  desktop: {
     width: 700,
     height: 700,
     breakpoint: 1024,
-    maxWidth: 1440,
   },
   
-  // Medium desktop / 17-19" (1366px - 1679px)
-  desktop_medium: {
-    width: 900,
-    height: 900,
-    breakpoint: 1441,
-    maxWidth: 1679,
-  },
-  
-  // Large desktop / 24" (1680px+)
-  desktop_large: {
-    width: 1200,
-    height: 1200,
-    breakpoint: 1680,
-  },
-  
-  // Tablet (768px - 1023px)
-  tablet: {
-    width: 600,
-    height: 600,
-    breakpoint: 768,
-    maxWidth: 1023,
-  },
-  
-  // Mobile (<768px)
+  // Mobile (<1024px)
   mobile: {
-    width: 360,
-    height: 360,
-    breakpoint: 0,
-    maxWidth: 767,
+    width: 500,
+    height: 500,
+    breakpoint: 1023,
   },
 };
 

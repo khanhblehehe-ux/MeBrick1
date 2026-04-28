@@ -527,43 +527,23 @@ export default function Stage({
   const stageWrapRef = useRef(null);
   const stageWorkspaceRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState(1);
-  const mobileCanvasScaleRef = useRef(null);
 
   useEffect(() => {
     if (!canvasSize?.width) return;
-    mobileCanvasScaleRef.current = null;
     const compute = () => {
-      const isMobileViewport = window.innerWidth < 1024;
-      if (isMobileViewport && mobileCanvasScaleRef.current !== null) {
-        setCanvasScale(mobileCanvasScaleRef.current);
-        return;
-      }
-
-      const workspaceRect = stageWorkspaceRef.current?.getBoundingClientRect();
-      const containerW = workspaceRect?.width ?? window.innerWidth;
-      const containerH = workspaceRect?.height ?? window.innerHeight;
-      const availableW = Math.max(0, containerW - 48);
-      const availableH = Math.max(0, containerH - 48);
-      const widthScale = availableW > 0 ? availableW / canvasSize.width : 1;
-      const heightScale = availableH > 0 ? availableH / canvasSize.height : 1;
-      const nextScale = Math.min(1, widthScale, heightScale);
-
-      if (isMobileViewport && mobileCanvasScaleRef.current === null) {
-        mobileCanvasScaleRef.current = nextScale;
-      }
-
-      setCanvasScale(nextScale);
+      const containerW = stageWrapRef.current?.getBoundingClientRect().width ?? window.innerWidth;
+      setCanvasScale(containerW > 0 && containerW < canvasSize.width ? containerW / canvasSize.width : 1);
     };
     const raf = requestAnimationFrame(compute);
     window.addEventListener("resize", compute);
-    const ro = stageWorkspaceRef.current ? new ResizeObserver(compute) : null;
-    if (ro && stageWorkspaceRef.current) ro.observe(stageWorkspaceRef.current);
+    const ro = stageWrapRef.current ? new ResizeObserver(compute) : null;
+    if (ro && stageWrapRef.current) ro.observe(stageWrapRef.current);
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", compute);
       ro?.disconnect();
     };
-  }, [canvasSize?.width, canvasSize?.height]);
+  }, [canvasSize?.width]);
 
   return (
     <div className="stage-wrap" ref={stageWrapRef}>

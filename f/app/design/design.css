@@ -5,37 +5,21 @@
 
 /* ===== CSS Tokens (Fluid Design) ===== */
 :root {
-  /* Fluid spacing scale - BASE values */
-  --space-xs-base: clamp(0.25rem, 2vw, 0.5rem);
-  --space-sm-base: clamp(0.5rem, 3vw, 1rem);
-  --space-md-base: clamp(1rem, 4vw, 1.5rem);
-  --space-lg-base: clamp(1.5rem, 5vw, 2rem);
-  --space-xl-base: clamp(2rem, 6vw, 3rem);
+  /* Fluid spacing scale */
+  --space-xs: clamp(0.25rem, 2vw, 0.5rem);
+  --space-sm: clamp(0.5rem, 3vw, 1rem);
+  --space-md: clamp(1rem, 4vw, 1.5rem);
+  --space-lg: clamp(1.5rem, 5vw, 2rem);
+  --space-xl: clamp(2rem, 6vw, 3rem);
 
-  /* Working spacing tokens (may be overridden per-breakpoint) */
-  --space-xs: var(--space-xs-base);
-  --space-sm: var(--space-sm-base);
-  --space-md: var(--space-md-base);
-  --space-lg: var(--space-lg-base);
-  --space-xl: var(--space-xl-base);
-
-  /* Fluid typography - BASE values */
-  --text-xs-base: clamp(0.75rem, 2vw, 0.875rem);
-  --text-sm-base: clamp(0.875rem, 2.5vw, 1rem);
-  --text-base-base: clamp(1rem, 3vw, 1.125rem);
-  --text-lg-base: clamp(1.125rem, 3.5vw, 1.375rem);
-  --text-xl-base: clamp(1.25rem, 4vw, 1.625rem);
-  --text-2xl-base: clamp(1.5rem, 5vw, 2rem);
-  --text-3xl-base: clamp(1.875rem, 6vw, 2.5rem);
-
-  /* Working typography tokens */
-  --text-xs: var(--text-xs-base);
-  --text-sm: var(--text-sm-base);
-  --text-base: var(--text-base-base);
-  --text-lg: var(--text-lg-base);
-  --text-xl: var(--text-xl-base);
-  --text-2xl: var(--text-2xl-base);
-  --text-3xl: var(--text-3xl-base);
+  /* Fluid typography */
+  --text-xs: clamp(0.75rem, 2vw, 0.875rem);
+  --text-sm: clamp(0.875rem, 2.5vw, 1rem);
+  --text-base: clamp(1rem, 3vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 3.5vw, 1.375rem);
+  --text-xl: clamp(1.25rem, 4vw, 1.625rem);
+  --text-2xl: clamp(1.5rem, 5vw, 2rem);
+  --text-3xl: clamp(1.875rem, 6vw, 2.5rem);
 
   /* Navy theme */
   --color-primary: #0A2540;
@@ -46,25 +30,6 @@
 
   /* Micro-interactions */
   --transition: all 0.2s ease;
-}
-
-/* Laptop breakpoint: scale design tokens by 90% (visual equivalent of html font-size:90%) */
-@media (min-width: 1024px) and (max-width: 1600px) {
-  :root {
-    --space-xs: calc(var(--space-xs-base) * 0.9);
-    --space-sm: calc(var(--space-sm-base) * 0.9);
-    --space-md: calc(var(--space-md-base) * 0.9);
-    --space-lg: calc(var(--space-lg-base) * 0.9);
-    --space-xl: calc(var(--space-xl-base) * 0.9);
-
-    --text-xs: calc(var(--text-xs-base) * 0.9);
-    --text-sm: calc(var(--text-sm-base) * 0.9);
-    --text-base: calc(var(--text-base-base) * 0.9);
-    --text-lg: calc(var(--text-lg-base) * 0.9);
-    --text-xl: calc(var(--text-xl-base) * 0.9);
-    --text-2xl: calc(var(--text-2xl-base) * 0.9);
-    --text-3xl: calc(var(--text-3xl-base) * 0.9);
-  }
 }
 
 /* Smooth scroll */
@@ -81,8 +46,7 @@ html {
   background: #0A2540;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255,255,255,0.08);
-  /* reduce header vertical padding by 5px top + 5px bottom = 10px total */
-  padding: calc(var(--space-sm) - 5px) var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   position: sticky;
   top: 0;
   z-index: 20;
@@ -188,34 +152,11 @@ html {
   min-height: calc(100vh - 120px);
 }
 
-/* Small desktop / Laptop 15" (1024px - 1365px) */
-@media (min-width: 1024px) and (max-width: 1365px) {
+@media (min-width: 1024px) {
   .lego-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(320px, 360px);
-    gap: var(--space-md);
-    align-items: start;
-    height: auto;
-  }
-}
-
-/* Medium desktop / 17-19" (1366px - 1679px) */
-@media (min-width: 1366px) and (max-width: 1679px) {
-  .lego-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(380px, 420px);
     gap: var(--space-lg);
-    align-items: start;
-    height: auto;
-  }
-}
-
-/* Large desktop / 24" (1680px+) */
-@media (min-width: 1680px) {
-  .lego-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(420px, 480px);
-    gap: var(--space-xl);
     align-items: start;
     height: auto;
   }
@@ -368,7 +309,7 @@ html {
 
 /* ===== Footer ===== */
 .lego-footer {
-  margin-top: 0;
+  margin-top: var(--space-xl);
   padding: var(--space-lg) 0;
   text-align: center;
   color: rgba(17, 24, 39, 0.65);
@@ -459,13 +400,6 @@ html {
 /* Step block */
 .panel-step {
   margin-bottom: var(--space-md);
-}
-
-/* Move stage (steps + reset + frame canvas) up 30px toward header on laptop/desktop */
-@media (min-width: 1024px) {
-  .stage-wrap {
-    transform: translateY(-30px);
-  }
 }
 
 .step-head {
@@ -770,23 +704,8 @@ html {
 .stage-wrap {
   flex: 1;
   min-width: 0;
-  height: auto; /* allow page to expand to fit canvas */
-  overflow: visible; /* allow page scroll to reach canvas */
-}
-
-/* Mobile: allow page scrolling so user can reach canvas and controls */
-@media (max-width: 768px) {
-  .stage-wrap,
-  .stage-card {
-    height: auto !important;
-    overflow: visible !important;
-  }
-  .stage-workspace {
-    overflow: visible !important;
-  }
-  .photo-frame-studio {
-    margin-top: 8px; /* small spacing from controls */
-  }
+  height: 100%; /* ensure it respects parent height */
+  overflow: hidden; /* prevent scroll at wrap level */
 }
 
 .stage-card {
@@ -796,10 +715,10 @@ html {
   box-shadow: 0 14px 40px rgba(10, 37, 64, 0.1);
   padding: var(--space-sm);
   width: 100%;
-  height: auto;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: visible; /* allow canvas to be scrolled into view */
+  overflow: hidden; /* prevent scrolling at this level */
 }
 
 /* Header */
@@ -848,10 +767,8 @@ html {
 
 /* Empty canvas */
 .stage-empty {
-  width: 100%;
-  flex: 1 1 auto;
-  min-height: 0; /* allow proper flex children clipping */
-  height: auto;
+  width: clamp(200px, 60vw, 840px);
+  height: clamp(200px, 60vw, 840px);
   background: rgba(255, 255, 255, 0.9);
   border-radius: clamp(1rem, 3vw, 1.5rem);
 
@@ -861,14 +778,8 @@ html {
   justify-content: center;
   text-align: center;
   padding: var(--space-lg);
-  margin: 5px 0 0 0; /* small top offset to nudge canvas down */
+  margin: var(--space-md) auto;
 }
-
-/* Ensure .stage-card allows .stage-empty to grow */
-.stage-card {
-  min-height: 0;
-}
-
 
 .stage-empty h3 {
   font-size: var(--text-lg);
@@ -1325,8 +1236,29 @@ html {
   background: #dcebfa;
 }
 
-/* Scale toàn bộ layout cho mọi màn >= 1024px */
-@media (min-width: 1024px) {
+/* Scale toàn bộ layout theo tỉ lệ màn hình desktop nhỏ */
+@media (min-width: 1024px) and (max-width: 1100px) {
+  .lego-customizer {
+    zoom: 0.75;
+  }
+}
+
+@media (min-width: 1101px) and (max-width: 1200px) {
+  .lego-customizer {
+    zoom: 0.82;
+  }
+}
+
+@media (min-width: 1201px) and (max-width: 1350px) {
+  .lego-customizer {
+    zoom: 0.9;
+  }
+}
+
+@media (min-width: 1351px) and (max-width: 1500px) {
+  .lego-customizer {
+    zoom: 0.95;
+  }
 }
 
 /* ===== 3 KHỐI NỐI LIỀN NHAU ===== */
@@ -2243,10 +2175,10 @@ html {
   display: flex;
   gap: 0px;
   min-height: calc(100vh - 80px);
-  height: auto;
-  max-height: none;
+  height: calc(100vh - 80px);
+  max-height: calc(100vh - 80px);
   align-items: stretch;
-  overflow: auto; /* allow scrolling */
+  overflow: hidden; /* prevent any scrolling at layout level */
 }
 
 .stage-workspace {
@@ -2271,7 +2203,7 @@ html {
   max-width: 100%;
   position: relative;
   align-self: stretch;
-  overflow-y: auto;
+  overflow-y: visible;
   display: flex;
   flex-direction: column;
 }
@@ -2387,7 +2319,7 @@ html {
   .sample-gallery {
     order: 1;
     max-height: none;
-    overflow-y: auto;
+    overflow-y: visible;
     border-right: none;
     border-bottom: 1px solid var(--lego-border);
     border-radius: 0;
@@ -2420,7 +2352,7 @@ html {
     min-height: unset;
     padding: 0 12px;
     margin: 0;
-    overflow-y: auto;
+    overflow-y: visible;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2586,7 +2518,7 @@ html {
     height: fit-content;
     min-height: unset;
     padding: 0 16px;
-    overflow-y: auto;
+    overflow-y: visible;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2672,7 +2604,7 @@ html {
     height: fit-content;
     min-height: unset;
     padding: 0;
-    overflow-y: auto;
+    overflow-y: visible;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2832,7 +2764,7 @@ html {
     flex: 3;
     min-width: 0;
     min-height: 100%;
-    overflow-y: auto;
+    overflow-y: visible;
     scrollbar-gutter: stable;
   }
 
@@ -3088,85 +3020,6 @@ html {
   .design-layout > .mb-panel {
     max-width: 100%;
   }
-
-  .lego-footer {
-    margin-top: 0;
-  }
-}
-
-/* Desktop hẹp / laptop nhỏ: thu gọn các cột để tránh bị che khuất khi resize Chrome */
-@media (min-width: 1024px) and (max-width: 1439px) {
-  .lego-layout {
-    padding: 0 10px;
-    gap: 12px;
-  }
-
-  .sample-sidebar {
-    flex: 1.6;
-    max-width: 240px;
-  }
-
-  .stage-workspace {
-    flex: 5.8;
-    padding: 0.35rem 0.75rem 1.25rem 0.75rem;
-    margin-top: 5px;
-  }
-
-  .design-layout > .mb-panel,
-  .control-panel {
-    flex: 2.4;
-  }
-
-  .stage-card {
-    padding: 24px;
-  }
-
-  .panel-card {
-    padding: 8px;
-  }
-
-  .stage-head {
-    gap: 12px;
-    margin-bottom: 10px;
-  }
-
-  .photo-frame-studio {
-    padding: 0.5rem;
-  }
-
-  .design-layout {
-    height: auto;
-    min-height: auto;
-    max-height: none;
-    overflow: visible;
-  }
-
-  .lego-layout {
-    height: auto;
-    min-height: auto;
-    max-height: none;
-  }
-
-  .stage-workspace {
-    height: auto;
-    min-height: auto;
-    overflow: visible;
-  }
-
-  .design-layout > .mb-panel,
-  .control-panel {
-    height: auto;
-    min-height: auto;
-  }
-
-  .lego-footer {
-    margin-top: 0;
-  }
-
-  .lego-customizer {
-    zoom: 0.9;
-    transform-origin: top center;
-  }
 }
 /* DISABLED - Keep 3-column layout on all screen sizes */
 /* @media (max-width: 1400px) {
@@ -3255,7 +3108,6 @@ html {
   background: transparent !important;
   border-radius: 0 !important;
   width: 100% !important;
-  max-width: none !important; /* allow full width to align with canvas */
 }
 
 /* ảnh thumbnail (chỉ ảnh) */
@@ -3453,7 +3305,7 @@ html {
 /* Thumbnail */
 .sample-thumb {
   width: 100%;
-  max-width: none; /* allow thumbnail to stretch to container width */
+  max-width: 120px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -3470,6 +3322,10 @@ html {
 
 /* Mobile: Phóng to thumbnail */
 @media (max-width: 1400px) {
+  .sample-thumb {
+    max-width: 150px !important;
+  }
+
   .sample-thumb img {
     max-height: 180px !important;
   }
