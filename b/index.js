@@ -60,6 +60,14 @@ app.options("*", cors());
 app.use(express.json({ limit: "25mb" }));
 app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 
+  // Traffic logger - logs response size and request info to b/logs/traffic.log
+  try {
+    const trafficLogger = require("./middlewares/trafficLogger");
+    app.use(trafficLogger);
+  } catch (e) {
+    console.warn("trafficLogger middleware failed to load:", e && e.message);
+  }
+
 // serve uploaded preview images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -71,7 +79,14 @@ app.use("/api/designs", require("./routes/design.route"));
 // routes
 app.use("/api/products", require("./routes/product.route"));
 app.use("/api/auth", require("./routes/auth.route"));
-app.use("/api/orders", require("./routes/order.route"));
+// Guard order routes with rapid-poller killer to immediately stop aggressive polling
+try {
+  const killRapidPollers = require("./middlewares/killRapidPollers");
+  app.use("/api/orders", killRapidPollers, require("./routes/order.route"));
+} catch (e) {
+  console.warn("killRapidPollers middleware failed to load:", e && e.message);
+  app.use("/api/orders", require("./routes/order.route"));
+}
 app.use("/api/admin", require("./routes/admin.route"));
 
 

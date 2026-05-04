@@ -121,20 +121,11 @@ export default function PayPage() {
     };
   }, [orderId, router]);
 
-  // Polling kiểm tra trạng thái thanh toán mỗi 5 giây (khi chưa paid)
+  // Polling temporarily disabled to stop origin egress (disabled by developer).
   useEffect(() => {
-    if (!orderId || !order || order?.payment_status === "paid") return;
-
-    const interval = setInterval(async () => {
-      try {
-        const o = await getOrderById(orderId);
-        if (o?.payment_status === "paid") {
-          setOrder(o);
-        }
-      } catch {}
-    }, 5000);
-
-    return () => clearInterval(interval);
+    // Polling intentionally disabled. To re-enable, restore previous implementation.
+    // Kept as a no-op so the component's lifecycle remains unchanged.
+    return;
   }, [orderId, order?.payment_status]);
 
   const amount = useMemo(() => Number(qrInfo?.amount || 0), [qrInfo]);
@@ -237,7 +228,8 @@ export default function PayPage() {
     );
   }
 
-
+
+
   return (
     <div style={{ maxWidth: 980, margin: "0 auto", padding: 16 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>

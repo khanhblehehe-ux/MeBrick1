@@ -117,6 +117,9 @@ export default function ControlPanel(props) {
   const [showPrintInfo, setShowPrintInfo] = useState(false);
   // ✅ State cho confirmation modal
   const [showConfirmation, setShowConfirmation] = useState(false);
+  // ✅ State: khi hoàn thành thiết kế, ẩn phần thiết kế và hiện form Nhập Thông Tin
+  const [showDesign, setShowDesign] = useState(true);
+  const printFormRef = useRef(null);
   const bgTabs = [
     "Tất cả",
     "Happy Birthday",
@@ -299,13 +302,16 @@ export default function ControlPanel(props) {
 
             {/* ✅ footer luôn nằm dưới */}
             <div className="mb-footer">
-              <button
-                type="button"
-                className="mb-btn mb-btn--primary mb-btn--lg mb-wfull"
-                disabled={!selectedBackground}
-                onClick={() => setStep(STEPS.LEGO)}>
-                Tiếp theo → Chỉnh LEGO <FiArrowRight />
-              </button>
+              {selectedBackground ? (
+                <button
+                  type="button"
+                  className="mb-btn mb-btn--primary mb-btn--lg mb-wfull mb-btn--elevated"
+                  onClick={() => setStep(STEPS.LEGO)}>
+                  Tiếp theo → Chỉnh LEGO <FiArrowRight />
+                </button>
+              ) : (
+                <div style={{ height: 48 }} />
+              )}
 
               {selectedBackground && (
                 <div className="mb-using">
@@ -320,16 +326,27 @@ export default function ControlPanel(props) {
         {step === STEPS.LEGO && (
           <section className="mb-block">
             <div className="mb-row mb-row--between" style={{ marginBottom: "12px" }}>
-              <button
-                type="button"
-                className="mb-btn mb-btn--outline"
-                onClick={() => setStep(STEPS.BG)}>
-                <FiArrowLeft /> Quay lại
-              </button>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <button
+                  type="button"
+                  className="mb-btn mb-btn--outline"
+                  onClick={() => setStep(STEPS.BG)}>
+                  <FiArrowLeft /> Quay lại
+                </button>
+
+                {!showDesign && (
+                  <button
+                    type="button"
+                    className="mb-btn mb-btn--outline"
+                    onClick={() => setShowDesign(true)}>
+                    ✏️ Chỉnh lại thiết kế
+                  </button>
+                )}
+              </div>
             </div>
 
-            {/* Step title */}
-            <div style={{ 
+            {showDesign && (
+              <div style={{ 
               display: "flex", 
               alignItems: "center", 
               gap: "8px", 
@@ -357,7 +374,10 @@ export default function ControlPanel(props) {
                 color: "#1a1a1a" 
               }}>Thiết kế nhân vật</span>
             </div>
+            )}
 
+            {showDesign && (
+              <>
             {/* 3 buttons in one row */}
             <div
               style={{
@@ -376,6 +396,13 @@ export default function ControlPanel(props) {
                   setActivePanel?.(null);
                   setSelectedId?.(null);
                   addCompleteLegoCharacter?.();
+                  // Ẩn phần thiết kế và chuyển xuống form Nhập Thông Tin
+                  try {
+                    setShowDesign(false);
+                    setTimeout(() => {
+                      printFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }, 120);
+                  } catch (err) { /* ignore */ }
                 }}>
                 <FiPlus />{" "}
                 {legoCharacters.length > 0
@@ -399,6 +426,8 @@ export default function ControlPanel(props) {
                 <FiImage /> Ảnh
               </button>
             </div>
+              </>
+            )}
 
             <input
               type="file"
@@ -437,87 +466,90 @@ export default function ControlPanel(props) {
 
             {!selectedText && (
               <>
-                <div className="mb-tabs">
-                  {layerTabs.map((t) => (
-                    <button
-                      key={t.key}
-                      type="button"
-                      className={`mb-tab ${
-                        selectedCategory === t.key ? "is-active" : ""
-                      }`}
-                      onClick={() => {
-                        setSelectedId?.(null);
-                        setActivePanel?.(null);
-                        setSelectedCategory(t.key);
-                      }}>
-                      {t.label}
-                    </button>
-                  ))}
-                </div>
+                {/* Thiết kế nhân vật - có thể ẩn sau khi hoàn thành */}
+                {showDesign && (
+                  <>
+                    <div className="mb-tabs">
+                      {layerTabs.map((t) => (
+                        <button
+                          key={t.key}
+                          type="button"
+                          className={`mb-tab ${
+                            selectedCategory === t.key ? "is-active" : ""
+                          }`}
+                          onClick={() => {
+                            setSelectedId?.(null);
+                            setActivePanel?.(null);
+                            setSelectedCategory(t.key);
+                          }}>
+                          {t.label}
+                        </button>
+                      ))}
+                    </div>
 
-                <div className="mb-layergrid">
-                  {(getFilteredLayers?.() || []).map((layer) => (
-                    <button
-                      key={layer.id}
-                      type="button"
-                      className={`mb-layercard${layer.layerType === "sticker" ? " mb-layercard--sticker" : ""}`}
-                      onClick={() => {
-                        setActivePanel?.(null);
+                    <div className="mb-layergrid">
+                      {(getFilteredLayers?.() || []).map((layer) => (
+                        <button
+                          key={layer.id}
+                          type="button"
+                          className={`mb-layercard${layer.layerType === "sticker" ? " mb-layercard--sticker" : ""}`}
+                          onClick={() => {
+                            setActivePanel?.(null);
 
-                        if (
-                          layer.layerType === "character" ||
-                          layer.layerType === "sticker"
-                        ) {
-                          addLegoLayer(layer);
-                          return;
-                        }
-                        if (!selectedCharacterId) {
-                          alert(
-                            "Vui lòng click chọn 1 nhân vật LEGO trong khung trước!",
-                          );
-                          return;
-                        }
-                        addLegoLayer(layer);
-                      }}>
-                      <div
-                        className="mb-layercard__thumb"
-                        style={{
-                          backgroundImage:
-                            layer.layerType !== "character" &&
-                            (layer.thumbnail || layer.src)
-                              ? `url(${layer.thumbnail || layer.src})`
-                              : "none",
-                          backgroundSize: "contain",
-                          backgroundPosition: "center",
-                          backgroundRepeat: "no-repeat",
-                        }}>
-                        {layer.layerType === "character" ? (
-                          <span className="mb-layercard__avatar">👤</span>
-                        ) : null}
-                      </div>
+                            if (
+                              layer.layerType === "character" ||
+                              layer.layerType === "sticker"
+                            ) {
+                              addLegoLayer(layer);
+                              return;
+                            }
+                            if (!selectedCharacterId) {
+                              alert(
+                                "Vui lòng click chọn 1 nhân vật LEGO trong khung trước!",
+                              );
+                              return;
+                            }
+                            addLegoLayer(layer);
+                          }}>
+                          <div
+                            className="mb-layercard__thumb"
+                            style={{
+                              backgroundImage:
+                                layer.layerType !== "character" &&
+                                (layer.thumbnail || layer.src)
+                                  ? `url(${layer.thumbnail || layer.src})`
+                                  : "none",
+                              backgroundSize: "contain",
+                              backgroundPosition: "center",
+                              backgroundRepeat: "no-repeat",
+                            }}>
+                            {layer.layerType === "character" ? (
+                              <span className="mb-layercard__avatar">👤</span>
+                            ) : null}
+                          </div>
 
-                      <div className="mb-layercard__name">{layer.name}</div>
-                      <div className="mb-layercard__price">
-                        {layer.price > 0
-                          ? `${layer.price.toLocaleString("vi-VN")}đ`
-                          : "Miễn phí"}
-                      </div>
-                    </button>
-                  ))}
-                </div>
+                          <div className="mb-layercard__name">{layer.name}</div>
+                          <div className="mb-layercard__price">
+                            {layer.price > 0
+                              ? `${layer.price.toLocaleString("vi-VN")}đ`
+                              : "Miễn phí"}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
 
-                  {/* Ghi chú nhờ designer chỉnh sửa */}
-                  <div style={{ margin: "10px 0 4px", color: "#555", fontSize: "12px", fontWeight: 600 }}>
-                    📝 Yêu cầu thêm cho designer (khi bạn không thể tự thiết kế) sau đó Designer sẽ liên hệ cho b để b check:
-                  </div>
-                  <textarea
-                    value={designerNote}
-                    onChange={(e) => setDesignerNote?.(e.target.value)}
-                    placeholder="VD: Thêm chữ tên ở góc phải, đổi màu nền sang hồng, thêm trái tim..."
-                    rows={3}
-                    style={{
-                      width: "100%",
-                      padding: "8px 10px",
+                    {/* Ghi chú nhờ designer chỉnh sửa */}
+                    <div style={{ margin: "10px 0 4px", color: "#555", fontSize: "12px", fontWeight: 600 }}>
+                      📝 Yêu cầu thêm cho designer (khi bạn không thể tự thiết kế) sau đó Designer sẽ liên hệ cho b để b check:
+                    </div>
+                    <textarea
+                      value={designerNote}
+                      onChange={(e) => setDesignerNote?.(e.target.value)}
+                      placeholder="VD: Thêm chữ tên ở góc phải, đổi màu nền sang hồng, thêm trái tim..."
+                      rows={3}
+                      style={{
+                        width: "100%",
+                        padding: "8px 10px",
                       fontSize: "12px",
                       border: "1px solid #ddd",
                       borderRadius: "6px",
@@ -528,9 +560,14 @@ export default function ControlPanel(props) {
                       boxSizing: "border-box",
                     }}
                   />
+                    </>
+                  )}
+
+                    {/* ===== Print information form (Step 3) ===== */}
 
                   {/* ===== Print information form (Step 3) ===== */}
-                  <div style={{ marginTop: 24, marginBottom: 20 }}>
+                  <div ref={printFormRef} style={{ marginTop: 24, marginBottom: 20 }}>
+
                     {/* Step title - matching style with "1 Thiết kế nhân vật" */}
                     <div style={{ 
                       display: "flex", 
