@@ -767,10 +767,13 @@ html {
 
 /* Empty canvas */
 .stage-empty {
-  width: clamp(200px, 60vw, 840px);
-  height: clamp(200px, 60vw, 840px);
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
   background: rgba(255, 255, 255, 0.9);
-  border-radius: clamp(1rem, 3vw, 1.5rem);
+  border-radius: inherit;
+  box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
@@ -778,7 +781,7 @@ html {
   justify-content: center;
   text-align: center;
   padding: var(--space-lg);
-  margin: var(--space-md) auto;
+  margin: 0;
 }
 
 .stage-empty h3 {
@@ -3277,9 +3280,28 @@ html {
   padding: 0 20px;
 }
 
+/* Khi panel ảnh mở: đổi màu nút */
+.sample-gallery.is-open .sample-toggle {
+  background: linear-gradient(135deg, #EAF2FF 0%, #DDEEFF 100%);
+  border-color: #3B82F6;
+  color: #0A2540;
+  box-shadow: 0 10px 28px rgba(59,130,246,0.12);
+}
+.sample-gallery.is-open .sample-toggle__icon {
+  opacity: 1;
+  color: #0A2540;
+}
+
 .sample-toggle__icon {
   font-size: 18px;
   opacity: 0.7;
+}
+
+/* Shift stepper and stage toward header */
+.lego-header__steps,
+.stage-workspace {
+  transform: translateY(-15px);
+  transition: transform 0.18s ease;
 }
 
 /* Panel ảnh */
