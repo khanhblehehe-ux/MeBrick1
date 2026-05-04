@@ -60,6 +60,8 @@ export function getCart() {
 
   if (!cart || !Array.isArray(cart.items)) return { items: [] };
 
+  const now = Date.now();
+
   cart.items = cart.items
     .map((it) => ({
       product_id: normInt(it.product_id ?? it.id ?? it.productId) || 0,
@@ -78,9 +80,26 @@ export function getCart() {
 
       variant_label: typeof it.variant_label === "string" ? it.variant_label : null,
       custom_note: typeof it.custom_note === "string" ? it.custom_note : null,
-    }))
-    .filter((it) => it.product_id);
 
+      // optional timestamp for design items (ms since epoch)
+      addedAt: Number(it.addedAt) || Number(it.added_at) || null,
+    }))
+    .filter((it) => it.product_id)
+    // Remove expired design items (TTL = 1 hour)
+    .filter((it) => {
+      if (!it.design_data) return true; // non-design items never expire
+      // If addedAt missing, treat as fresh (set to now)
+      if (!it.addedAt) {
+        it.addedAt = now;
+        return true;
+      }
+      const age = now - it.addedAt;
+      const TTL = 60 * 60 * 1000; // 1 hour
+      return age <= TTL;
+    });
+
+  // Persist cleanup (expired items removed / addedAt set)
+  try { setCart(cart); } catch { /* ignore */ }
   return cart;
 }
 
@@ -154,6 +173,9 @@ export function addToCart(payload) {
 
     variant_label: typeof payload?.variant_label === "string" ? payload.variant_label : null,
     custom_note: typeof payload?.custom_note === "string" ? payload.custom_note : null,
+
+    // timestamp for design items (ms since epoch)
+    addedAt: payload?.addedAt ? Number(payload.addedAt) : Date.now(),
   };
 
   if (idx >= 0) {
@@ -166,6 +188,9 @@ export function addToCart(payload) {
     cart.items[idx].image = cart.items[idx].image || base.image;
     cart.items[idx].design_preview_url = cart.items[idx].design_preview_url || base.design_preview_url;
     cart.items[idx].custom_note = cart.items[idx].custom_note || base.custom_note;
+
+    // refresh timestamp for design items (reset TTL)
+    cart.items[idx].addedAt = Date.now();
   } else {
     cart.items.push(base);
   }
@@ -192,6 +217,18 @@ export function updateCartItem(index, patch) {
 
   next.design_preview_url =
     typeof next.design_preview_url === "string" ? next.design_preview_url : null;
+
+  // preserve or normalize addedAt (allow patch to reset it)
+  if (patch && Object.prototype.hasOwnProperty.call(patch, 'addedAt')) {
+    next.addedAt = patch.addedAt ? Number(patch.addedAt) : null;
+  } else {
+    // If item has design_data, refresh timestamp so TTL resets on edit
+    if (next.design_data) {
+      next.addedAt = Date.now();
+    } else {
+      next.addedAt = it.addedAt ? Number(it.addedAt) : null;
+    }
+  }
 
   cart.items[index] = next;
   setCart(cart);
