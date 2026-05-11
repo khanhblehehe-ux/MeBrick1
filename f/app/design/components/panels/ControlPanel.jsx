@@ -345,37 +345,7 @@ export default function ControlPanel(props) {
               </div>
             </div>
 
-            {/* When design is hidden, show Step 2 header near the top buttons */}
-            {!showDesign && (
-              <div style={{ 
-                display: "flex", 
-                alignItems: "center", 
-                gap: "8px", 
-                marginBottom: "12px",
-                padding: "8px 12px",
-                background: "#EBF3FF",
-                borderRadius: "8px"
-              }}>
-                <span style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "28px",
-                  height: "28px",
-                  borderRadius: "50%",
-                  background: "#4285F4",
-                  color: "white",
-                  fontWeight: "600",
-                  fontSize: "14px",
-                  flexShrink: 0
-                }}>2</span>
-                <span style={{ 
-                  fontSize: "15px", 
-                  fontWeight: "600", 
-                  color: "#1a1a1a" 
-                }}>Nhập Thông Tin</span>
-              </div>
-            )}
+            
 
             {/* Render the print information form immediately when design is hidden */}
             {!showDesign && (
