@@ -396,13 +396,8 @@ export default function ControlPanel(props) {
                   setActivePanel?.(null);
                   setSelectedId?.(null);
                   addCompleteLegoCharacter?.();
-                  // Ẩn phần thiết kế và chuyển xuống form Nhập Thông Tin
-                  try {
-                    setShowDesign(false);
-                    setTimeout(() => {
-                      printFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-                    }, 120);
-                  } catch (err) { /* ignore */ }
+                  // Ẩn phần thiết kế (không tự cuộn trang)
+                  setShowDesign(false);
                 }}>
                 <FiPlus />{" "}
                 {legoCharacters.length > 0
