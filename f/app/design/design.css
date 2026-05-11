@@ -3407,33 +3407,6 @@ html {
    BLUE OCEAN THEME – GLOBAL OVERRIDE
 ===================================== */
 
-/* ===== VERCEL FIX: Force desktop layout row on 1024px+ ===== */
-@media (min-width: 1024px) {
-  .design-layout {
-    display: flex !important;
-    flex-direction: row !important;
-    min-height: calc(100vh - 80px) !important;
-  }
-
-  .sample-gallery {
-    flex: 2 !important;
-    flex-direction: row !important;
-  }
-
-  .sample-gallery.is-open .sample-panel {
-    display: block !important;
-  }
-
-  .stage-workspace {
-    flex: 5 !important;
-  }
-
-  .design-layout > .mb-panel,
-  .control-panel {
-    flex: 3.6 !important;
-  }
-}
-
 :root {
   --mb-primary: #5bbcf5; /* xanh chính */
   --mb-primary-strong: #90b2fc; /* xanh đậm */

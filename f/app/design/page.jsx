@@ -1052,7 +1052,7 @@ function DesignPageInner() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}>
         {/* ===== GRADIENT BACKGROUND WRAPPER ===== */}
-        <div className="min-h-screen w-full relative overflow-hidden">
+        <div className="w-full relative overflow-visible">
           {/* Radial gradient background */}
           <div className="absolute inset-0 z-0 bg-white" />
           {/* Overlay nhẹ để dễ đọc chữ */}
