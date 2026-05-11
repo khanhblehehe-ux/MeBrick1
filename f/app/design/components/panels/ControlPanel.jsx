@@ -345,6 +345,285 @@ export default function ControlPanel(props) {
               </div>
             </div>
 
+            {/* When design is hidden, show Step 2 header near the top buttons */}
+            {!showDesign && (
+              <div style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                gap: "8px", 
+                marginBottom: "12px",
+                padding: "8px 12px",
+                background: "#EBF3FF",
+                borderRadius: "8px"
+              }}>
+                <span style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "28px",
+                  height: "28px",
+                  borderRadius: "50%",
+                  background: "#4285F4",
+                  color: "white",
+                  fontWeight: "600",
+                  fontSize: "14px",
+                  flexShrink: 0
+                }}>2</span>
+                <span style={{ 
+                  fontSize: "15px", 
+                  fontWeight: "600", 
+                  color: "#1a1a1a" 
+                }}>Nhập Thông Tin</span>
+              </div>
+            )}
+
+            {/* Render the print information form immediately when design is hidden */}
+            {!showDesign && (
+              <div ref={printFormRef} style={{ marginTop: 24, marginBottom: 20 }}>
+
+                {/* Step title - matching style with "1 Thiết kế nhân vật" */}
+                <div style={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  gap: "8px", 
+                  marginBottom: "16px",
+                  padding: "8px 12px",
+                  background: "#EBF3FF",
+                  borderRadius: "8px"
+                }}>
+                  <span style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "50%",
+                    background: "#4285F4",
+                    color: "white",
+                    fontWeight: "600",
+                    fontSize: "14px",
+                    flexShrink: 0
+                  }}>2</span>
+                  <span style={{ 
+                    fontSize: "15px", 
+                    fontWeight: "600", 
+                    color: "#1a1a1a" 
+                  }}>Nhập Thông Tin</span>
+                </div>
+
+                <div style={{
+                  background: "#fff",
+                  padding: 24,
+                  borderRadius: 12,
+                  border: "1px solid #e5e7eb",
+                }}>
+                  {/* TÊN Field */}
+                  <div style={{ marginBottom: 16 }}>
+                    <label style={{ 
+                      display: "block", 
+                      fontSize: 13, 
+                      fontWeight: 600, 
+                      color: "#111", 
+                      marginBottom: 8,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px"
+                    }}>
+                      TÊN <span style={{ color: "#ef4444" }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={printName}
+                      onChange={(e) => setPrintName?.(e.target.value)}
+                      placeholder="Nhập tên"
+                      style={{ 
+                        width: "100%",
+                        padding: 12,
+                        borderRadius: 8,
+                        border: "1px solid #e5e7eb",
+                        fontSize: 14,
+                        fontFamily: "inherit",
+                        boxSizing: "border-box",
+                        outline: "none",
+                        transition: "border-color 0.2s"
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = "#2563eb"}
+                      onBlur={(e) => e.target.style.borderColor = "#e5e7eb"}
+                    />
+                  </div>
+
+                  {/* NGÀY Field */}
+                  <div style={{ marginBottom: 16 }}>
+                    <label style={{ 
+                      display: "block", 
+                      fontSize: 13, 
+                      fontWeight: 600, 
+                      color: "#111", 
+                      marginBottom: 8,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px"
+                    }}>
+                      NGÀY
+                    </label>
+                    <input
+                      type="date"
+                      value={printDate}
+                      onChange={(e) => setPrintDate?.(e.target.value)}
+                      placeholder="mm/dd/yyyy"
+                      style={{ 
+                        width: "100%",
+                        padding: 12,
+                        borderRadius: 8,
+                        border: "1px solid #e5e7eb",
+                        fontSize: 14,
+                        fontFamily: "inherit",
+                        boxSizing: "border-box",
+                        outline: "none",
+                        transition: "border-color 0.2s",
+                        cursor: "pointer"
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = "#2563eb"}
+                      onBlur={(e) => e.target.style.borderColor = "#e5e7eb"}
+                    />
+                  </div>
+
+                  {/* TIÊU ĐỀ Field */}
+                  <div style={{ marginBottom: 16 }}>
+                    <label style={{ 
+                      display: "block", 
+                      fontSize: 13, 
+                      fontWeight: 600, 
+                      color: "#111", 
+                      marginBottom: 8,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px"
+                    }}>
+                      TIÊU ĐỀ
+                    </label>
+                    <input
+                      type="text"
+                      value={printTitle}
+                      onChange={(e) => setPrintTitle?.(e.target.value)}
+                      placeholder="Nhập tiêu đề"
+                      style={{ 
+                        width: "100%",
+                        padding: 12,
+                        borderRadius: 8,
+                        border: "1px solid #e5e7eb",
+                        fontSize: 14,
+                        fontFamily: "inherit",
+                        boxSizing: "border-box",
+                        outline: "none",
+                        transition: "border-color 0.2s"
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = "#2563eb"}
+                      onBlur={(e) => e.target.style.borderColor = "#e5e7eb"}
+                    />
+                  </div>
+
+                  {/* NGÀNH / TIÊU ĐỀ / LỰA CHỌN Field */}
+                  <div style={{ marginBottom: 24 }}>
+                    <label style={{ 
+                      display: "block", 
+                      fontSize: 13, 
+                      fontWeight: 600, 
+                      color: "#111", 
+                      marginBottom: 8,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px"
+                    }}>
+                      NGÀNH / TIÊU ĐỀ / LỰA CHỌN
+                    </label>
+                    <textarea
+                      value={printMessage}
+                      onChange={(e) => setPrintMessage?.(e.target.value)}
+                      placeholder="Nhập nội dung"
+                      rows={5}
+                      style={{ 
+                        width: "100%",
+                        padding: 12,
+                        borderRadius: 8,
+                        border: "1px solid #e5e7eb",
+                        fontSize: 14,
+                        fontFamily: "inherit",
+                        boxSizing: "border-box",
+                        outline: "none",
+                        transition: "border-color 0.2s",
+                        resize: "vertical"
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = "#2563eb"}
+                      onBlur={(e) => e.target.style.borderColor = "#e5e7eb"}
+                    />
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 12 }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!printName || !printTitle || !printMessage || !printDate) {
+                          alert("Vui lòng điền đầy đủ thông tin (Tên, Tiêu đề, Lời nhắn, Ngày)");
+                          return;
+                        }
+                        setShowConfirmation(true);
+                      }}
+                      style={{
+                        padding: "12px 24px",
+                        backgroundColor: "#2563eb",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 8,
+                        fontSize: 14,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
+                        transition: "background-color 0.2s",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px"
+                      }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = "#1d4ed8"}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = "#2563eb"}
+                    >
+                      GỬI THÔNG TIN
+                      <span style={{ fontSize: 16 }}>→</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPrintName?.("");
+                        setPrintTitle?.("");
+                        setPrintMessage?.("");
+                        setPrintDate?.("");
+                      }}
+                      style={{
+                        padding: "12px 24px",
+                        backgroundColor: "#f3f4f6",
+                        color: "#1f2937",
+                        border: "1px solid #e5e7eb",
+                        borderRadius: 8,
+                        fontSize: 14,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = "#e5e7eb";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = "#f3f4f6";
+                      }}
+                    >
+                      XÓA
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {showDesign && (
               <div style={{ 
               display: "flex", 
@@ -558,252 +837,7 @@ export default function ControlPanel(props) {
                     </>
                   )}
 
-                    {/* ===== Print information form (Step 3) ===== */}
-
-                  {/* ===== Print information form (Step 3) ===== */}
-                  <div ref={printFormRef} style={{ marginTop: 24, marginBottom: 20 }}>
-
-                    {/* Step title - matching style with "1 Thiết kế nhân vật" */}
-                    <div style={{ 
-                      display: "flex", 
-                      alignItems: "center", 
-                      gap: "8px", 
-                      marginBottom: "16px",
-                      padding: "8px 12px",
-                      background: "#EBF3FF",
-                      borderRadius: "8px"
-                    }}>
-                      <span style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "28px",
-                        height: "28px",
-                        borderRadius: "50%",
-                        background: "#4285F4",
-                        color: "white",
-                        fontWeight: "600",
-                        fontSize: "14px",
-                        flexShrink: 0
-                      }}>2</span>
-                      <span style={{ 
-                        fontSize: "15px", 
-                        fontWeight: "600", 
-                        color: "#1a1a1a" 
-                      }}>Nhập Thông Tin</span>
-                    </div>
-
-                    <div style={{
-                      background: "#fff",
-                      padding: 24,
-                      borderRadius: 12,
-                      border: "1px solid #e5e7eb",
-                    }}>
-                      {/* TÊN Field */}
-                      <div style={{ marginBottom: 16 }}>
-                        <label style={{ 
-                          display: "block", 
-                          fontSize: 13, 
-                          fontWeight: 600, 
-                          color: "#111", 
-                          marginBottom: 8,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.5px"
-                        }}>
-                          TÊN <span style={{ color: "#ef4444" }}>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={printName}
-                          onChange={(e) => setPrintName?.(e.target.value)}
-                          placeholder="Nhập tên"
-                          style={{ 
-                            width: "100%",
-                            padding: 12,
-                            borderRadius: 8,
-                            border: "1px solid #e5e7eb",
-                            fontSize: 14,
-                            fontFamily: "inherit",
-                            boxSizing: "border-box",
-                            outline: "none",
-                            transition: "border-color 0.2s"
-                          }}
-                          onFocus={(e) => e.target.style.borderColor = "#2563eb"}
-                          onBlur={(e) => e.target.style.borderColor = "#e5e7eb"}
-                        />
-                      </div>
-
-                      {/* NGÀY Field */}
-                      <div style={{ marginBottom: 16 }}>
-                        <label style={{ 
-                          display: "block", 
-                          fontSize: 13, 
-                          fontWeight: 600, 
-                          color: "#111", 
-                          marginBottom: 8,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.5px"
-                        }}>
-                          NGÀY
-                        </label>
-                        <input
-                          type="date"
-                          value={printDate}
-                          onChange={(e) => setPrintDate?.(e.target.value)}
-                          placeholder="mm/dd/yyyy"
-                          style={{ 
-                            width: "100%",
-                            padding: 12,
-                            borderRadius: 8,
-                            border: "1px solid #e5e7eb",
-                            fontSize: 14,
-                            fontFamily: "inherit",
-                            boxSizing: "border-box",
-                            outline: "none",
-                            transition: "border-color 0.2s",
-                            cursor: "pointer"
-                          }}
-                          onFocus={(e) => e.target.style.borderColor = "#2563eb"}
-                          onBlur={(e) => e.target.style.borderColor = "#e5e7eb"}
-                        />
-                      </div>
-
-                      {/* TIÊU ĐỀ Field */}
-                      <div style={{ marginBottom: 16 }}>
-                        <label style={{ 
-                          display: "block", 
-                          fontSize: 13, 
-                          fontWeight: 600, 
-                          color: "#111", 
-                          marginBottom: 8,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.5px"
-                        }}>
-                          TIÊU ĐỀ
-                        </label>
-                        <input
-                          type="text"
-                          value={printTitle}
-                          onChange={(e) => setPrintTitle?.(e.target.value)}
-                          placeholder="Nhập tiêu đề"
-                          style={{ 
-                            width: "100%",
-                            padding: 12,
-                            borderRadius: 8,
-                            border: "1px solid #e5e7eb",
-                            fontSize: 14,
-                            fontFamily: "inherit",
-                            boxSizing: "border-box",
-                            outline: "none",
-                            transition: "border-color 0.2s"
-                          }}
-                          onFocus={(e) => e.target.style.borderColor = "#2563eb"}
-                          onBlur={(e) => e.target.style.borderColor = "#e5e7eb"}
-                        />
-                      </div>
-
-                      {/* NGÀNH / TIÊU ĐỀ / LỰA CHỌN Field */}
-                      <div style={{ marginBottom: 24 }}>
-                        <label style={{ 
-                          display: "block", 
-                          fontSize: 13, 
-                          fontWeight: 600, 
-                          color: "#111", 
-                          marginBottom: 8,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.5px"
-                        }}>
-                          NGÀNH / TIÊU ĐỀ / LỰA CHỌN
-                        </label>
-                        <textarea
-                          value={printMessage}
-                          onChange={(e) => setPrintMessage?.(e.target.value)}
-                          placeholder="Nhập nội dung"
-                          rows={5}
-                          style={{ 
-                            width: "100%",
-                            padding: 12,
-                            borderRadius: 8,
-                            border: "1px solid #e5e7eb",
-                            fontSize: 14,
-                            fontFamily: "inherit",
-                            boxSizing: "border-box",
-                            outline: "none",
-                            transition: "border-color 0.2s",
-                            resize: "vertical"
-                          }}
-                          onFocus={(e) => e.target.style.borderColor = "#2563eb"}
-                          onBlur={(e) => e.target.style.borderColor = "#e5e7eb"}
-                        />
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 12 }}>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (!printName || !printTitle || !printMessage || !printDate) {
-                              alert("Vui lòng điền đầy đủ thông tin (Tên, Tiêu đề, Lời nhắn, Ngày)");
-                              return;
-                            }
-                            setShowConfirmation(true);
-                          }}
-                          style={{
-                            padding: "12px 24px",
-                            backgroundColor: "#2563eb",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: 8,
-                            fontSize: 14,
-                            fontWeight: 600,
-                            cursor: "pointer",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: 8,
-                            transition: "background-color 0.2s",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.5px"
-                          }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = "#1d4ed8"}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = "#2563eb"}
-                        >
-                          GỬI THÔNG TIN
-                          <span style={{ fontSize: 16 }}>→</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setPrintName?.("");
-                            setPrintTitle?.("");
-                            setPrintMessage?.("");
-                            setPrintDate?.("");
-                          }}
-                          style={{
-                            padding: "12px 24px",
-                            backgroundColor: "#f3f4f6",
-                            color: "#1f2937",
-                            border: "1px solid #e5e7eb",
-                            borderRadius: 8,
-                            fontSize: 14,
-                            fontWeight: 600,
-                            cursor: "pointer",
-                            transition: "all 0.2s",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.5px"
-                          }}
-                          onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = "#e5e7eb";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = "#f3f4f6";
-                          }}
-                        >
-                          XÓA
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  
 
                 {selectedCharacterId && (
                   <button
