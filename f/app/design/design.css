@@ -2577,9 +2577,11 @@ html {
     max-width: 100%;
   }
 
+  /* ✅ KEEP ROW LAYOUT on tablet (1024px breakpoint requirement) */
   .design-layout {
-    flex-direction: column;
-    min-height: auto;
+    display: flex;
+    flex-direction: row;
+    min-height: calc(100vh - 80px);
     align-items: stretch;
     gap: 0;
     width: 100%;
@@ -2590,35 +2592,34 @@ html {
   }
 
   .sample-gallery {
-    order: 1;
-    max-height: 180px;
-    flex: none;
-    overflow-x: auto;
-    overflow-y: hidden;
-    border-right: none;
-    border-bottom: 1px solid var(--lego-border);
+    flex: 1.5;
+    max-height: none;
+    order: unset;
+    overflow-y: auto;
+    border-right: 1px solid var(--lego-border);
+    border-bottom: none;
     border-radius: 0;
     padding: 8px;
   }
 
   .stage-workspace {
-    order: 2;
-    flex: none;
-    height: fit-content;
-    min-height: unset;
-    padding: 0;
-    overflow-y: visible;
+    flex: 4;
+    order: unset;
+    height: 100%;
+    min-height: 0;
+    padding: 0.5rem 1rem;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background: transparent;
+    justify-content: flex-start;
+    background: #f5f7fa;
     border-radius: 0;
   }
 
   .stage-card {
     padding: 0;
-    height: 100%;
+    height: auto;
     width: 100%;
     margin: 0;
     box-sizing: border-box;
@@ -2633,19 +2634,17 @@ html {
   }
 
   .design-layout > .mb-panel {
-    order: 3;
-    flex: none;
-    height: auto;
-    max-height: fit-content;
+    flex: 2;
+    order: unset;
+    height: 100%;
+    max-height: none;
     overflow-y: auto;
     border-right: none;
-    border-top: 1px solid var(--lego-border);
+    border-top: none;
+    border-bottom: none;
+    border-left: 1px solid var(--lego-border);
     border-radius: 0;
     padding: 0;
-  }
-
-  .lego-canvas {
-    background-size: contain !important;
   }
 
   .photo-frame-studio {
@@ -3407,6 +3406,33 @@ html {
 /* =====================================
    BLUE OCEAN THEME – GLOBAL OVERRIDE
 ===================================== */
+
+/* ===== VERCEL FIX: Force desktop layout row on 1024px+ ===== */
+@media (min-width: 1024px) {
+  .design-layout {
+    display: flex !important;
+    flex-direction: row !important;
+    min-height: calc(100vh - 80px) !important;
+  }
+
+  .sample-gallery {
+    flex: 2 !important;
+    flex-direction: row !important;
+  }
+
+  .sample-gallery.is-open .sample-panel {
+    display: block !important;
+  }
+
+  .stage-workspace {
+    flex: 5 !important;
+  }
+
+  .design-layout > .mb-panel,
+  .control-panel {
+    flex: 3.6 !important;
+  }
+}
 
 :root {
   --mb-primary: #5bbcf5; /* xanh chính */
