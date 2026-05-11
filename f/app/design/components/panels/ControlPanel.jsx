@@ -645,8 +645,6 @@ export default function ControlPanel(props) {
                   setActivePanel?.(null);
                   setSelectedId?.(null);
                   addCompleteLegoCharacter?.();
-                  // Ẩn phần thiết kế (không tự cuộn trang)
-                  setShowDesign(false);
                 }}>
                 <FiPlus />{" "}
                 {legoCharacters.length > 0
