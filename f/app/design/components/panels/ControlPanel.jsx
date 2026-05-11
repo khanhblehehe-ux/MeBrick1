@@ -645,7 +645,6 @@ export default function ControlPanel(props) {
                   setActivePanel?.(null);
                   setSelectedId?.(null);
                   addCompleteLegoCharacter?.();
-                  setShowDesign(false);
                 }}>
                 <FiPlus />{" "}
                 {legoCharacters.length > 0
