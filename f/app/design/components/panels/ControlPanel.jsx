@@ -349,7 +349,7 @@ export default function ControlPanel(props) {
 
             {/* Render the print information form immediately when design is hidden */}
             {!showDesign && (
-              <div ref={printFormRef} style={{ marginTop: 24, marginBottom: 20 }}>
+              <div ref={printFormRef} style={{ marginTop: 8, marginBottom: 20 }}>
 
                 {/* Step title - matching style with "1 Thiết kế nhân vật" */}
                 <div style={{ 
