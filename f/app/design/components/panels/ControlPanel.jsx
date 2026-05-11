@@ -632,13 +632,13 @@ export default function ControlPanel(props) {
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr 1fr",
-                gap: "8px",
+                gap: "4px",
                 marginBottom: "12px",
               }}>
               <button
                 type="button"
                 className="mb-btn mb-btn--primary"
-                style={{ fontSize: "13px", padding: "8px 10px" }}
+                style={{ fontSize: "13px", padding: "7px 8px" }}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -656,7 +656,7 @@ export default function ControlPanel(props) {
               <button
                 type="button"
                 className="mb-btn mb-btn--outline"
-                style={{ fontSize: "13px", padding: "8px 10px" }}
+                style={{ fontSize: "13px", padding: "7px 8px" }}
                 onClick={onAddTextClick}>
                 <FiType /> Chữ
               </button>
@@ -664,7 +664,7 @@ export default function ControlPanel(props) {
               <button
                 type="button"
                 className="mb-btn mb-btn--outline"
-                style={{ fontSize: "13px", padding: "8px 10px" }}
+                style={{ fontSize: "13px", padding: "7px 8px" }}
                 onClick={onAddImageClick}>
                 <FiImage /> Ảnh
               </button>
