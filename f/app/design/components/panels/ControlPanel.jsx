@@ -530,11 +530,7 @@ export default function ControlPanel(props) {
                     <button
                       type="button"
                       onClick={() => {
-                        if (!printName || !printTitle || !printMessage || !printDate) {
-                          alert("Vui lòng điền đầy đủ thông tin (Tên, Tiêu đề, Lời nhắn, Ngày)");
-                          return;
-                        }
-                        setShowConfirmation(true);
+                        setStep(STEPS.CHECKOUT);
                       }}
                       style={{
                         padding: "12px 24px",
@@ -556,7 +552,7 @@ export default function ControlPanel(props) {
                       onMouseEnter={(e) => e.target.style.backgroundColor = "#1d4ed8"}
                       onMouseLeave={(e) => e.target.style.backgroundColor = "#2563eb"}
                     >
-                      GỬI THÔNG TIN
+                      TIẾP THEO → THANH TOÁN
                       <span style={{ fontSize: 16 }}>→</span>
                     </button>
                     <button
@@ -807,7 +803,7 @@ export default function ControlPanel(props) {
 
                   
 
-                {selectedCharacterId && (
+                {selectedCharacterId && showDesign && (
                   <button
                     type="button"
                     className="mb-btn mb-btn--danger mb-btn--lg mb-wfull"
@@ -819,13 +815,17 @@ export default function ControlPanel(props) {
                   </button>
                 )}
 
-                <button
-                  type="button"
-                  className="mb-btn mb-btn--primary mb-btn--lg mb-wfull"
-                  onClick={() => setStep(STEPS.CHECKOUT)}
-                  disabled={!selectedSize}>
-                  Tiếp theo → Thanh toán <FiArrowRight />
-                </button>
+                {showDesign && (
+                  <button
+                    type="button"
+                    className="mb-btn mb-btn--primary mb-btn--lg mb-wfull"
+                    onClick={() => {
+                      setShowDesign(false);
+                    }}
+                    disabled={!selectedSize}>
+                    Tiếp theo → Nhập Thông Tin <FiArrowRight />
+                  </button>
+                )}
               </>
             )}
           </section>
